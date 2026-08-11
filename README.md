@@ -94,3 +94,26 @@ The VM can then be accessed from the macOS host using:
 ```bash
 ssh ruslan@docker-lab.local
 ```
+## 3. Docker installation
+
+To be completed.
+
+## 4. PostgreSQL deployment
+
+To be completed.
+
+## 5. Networking
+
+To be completed.
+
+## 6. Persistent storage
+
+To be completed.
+
+## 7. Testing
+
+To be completed.
+
+## Troubleshooting
+
+Problems encountered during deployment and their solutions will be documented here.

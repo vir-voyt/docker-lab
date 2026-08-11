@@ -18,12 +18,12 @@ Home lab for deploying and administering PostgreSQL with Docker on Ubuntu Server
 |-|-|
 | Host | MacBook Pro M1 Pro |
 | Hypervisor | UTM |
-| Guest OS | Ubuntu Server 24.04 LTS |
+| Guest OS | Ubuntu Server 24.04.04 LTS |
 | Architecture | ARM64 / aarch64 |
 | VM CPU | 4 vCPU |
 | VM RAM | 4 GB |
 | VM Disk | 40 GB |
-| Filesystem | ext4 |
+| Storage | LVM + ext4 |
 | Remote access | OpenSSH |
 
 ## Architecture

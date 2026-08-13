@@ -96,7 +96,36 @@ ssh ruslan@docker-lab.local
 ```
 ## 3. Docker installation
 
-To be completed.
+### Set up Docker's apt repository
+
+```apt``` prerequisites and Docker GPG key setup:
+
+```bash
+sudo apt update
+sudo apt install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+```
+
+Adding the repository to ```apt``` soucres:
+
+```bash
+sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+```
+
+```bash
+sudo apt upadte
+```
+
+### 
 
 ## 4. PostgreSQL deployment
 
@@ -116,4 +145,51 @@ To be completed.
 
 ## Troubleshooting
 
-Problems encountered during deployment and their solutions will be documented here.
+### ```sudo apt update``` error
+
+After adding the ```Docker``` repository an error occurred:
+
+```bash
+sudo apt update
+E: Malformed entry 1 in sources file /etc/apt/sources.list.d/docker.sources (URI)
+E: The list of sources could not be read.
+```
+
+```docker.sources``` was checked:
+
+```bash
+cat /etc/apt/sources.list.d/docker.sources
+
+Types: deb
+
+URIs: https://download.docker.com/linux/ubuntu
+
+Suites: noble
+
+Components: stable
+
+Architectures: arm64
+
+Signed-By: /etc/apt/keyrings/docker.asc
+
+```
+
+The file contained an empty line after each entry, causing ```apt``` to parse them as separate entries.
+
+```bash
+sudo nano /etc/apt/sources.list.d/docker.sources
+```
+
+After removing the empty lines, the file looked like this:
+
+```bash
+ruslan@docker-lab:~$ cat /etc/apt/sources.list.d/docker.sources
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: noble
+Components: stable
+Architectures: arm64
+Signed-By: /etc/apt/keyrings/docker.asc
+```
+
+After the fix, apt update completed successfully.

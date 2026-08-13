@@ -125,7 +125,30 @@ EOF
 sudo apt upadte
 ```
 
-### 
+### Install the Docker packages.
+
+Installing the latest version:
+
+```bash
+sudo apt install docker-ce docker-ce-cli containerd.io \
+docker-buildx-plugin docker-compose-plugin
+```
+
+Docker service status check:
+
+```bash
+sudo systemctl status docker
+```
+
+### Smoke test
+
+Running the test container:
+
+```bash
+sudo docker run hello-world
+```
+
+Successful launch!
 
 ## 4. PostgreSQL deployment
 

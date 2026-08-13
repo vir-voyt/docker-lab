@@ -18,7 +18,7 @@ Home lab for deploying and administering PostgreSQL with Docker on Ubuntu Server
 |-|-|
 | Host | MacBook Pro M1 Pro |
 | Hypervisor | UTM |
-| Guest OS | Ubuntu Server 24.04.04 LTS |
+| Guest OS | Ubuntu Server 24.04.4 LTS |
 | Architecture | ARM64 / aarch64 |
 | VM CPU | 4 vCPU |
 | VM RAM | 4 GB |
@@ -94,7 +94,7 @@ The VM can then be accessed from the macOS host using:
 ```bash
 ssh ruslan@docker-lab.local
 ```
-## 3. Docker installation
+## 2. Docker installation
 
 ### Set up Docker's apt repository
 
@@ -108,7 +108,7 @@ sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyring
 sudo chmod a+r /etc/apt/keyrings/docker.asc
 ```
 
-Adding the repository to ```apt``` soucres:
+Adding the repository to ```apt``` sources:
 
 ```bash
 sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
@@ -122,10 +122,10 @@ EOF
 ```
 
 ```bash
-sudo apt upadte
+sudo apt update
 ```
 
-### Install the Docker packages.
+### Install the Docker packages
 
 Installing the latest version:
 
@@ -150,19 +150,37 @@ sudo docker run hello-world
 
 Successful launch!
 
-## 4. PostgreSQL deployment
+## 3. PostgreSQL deployment
+
+Installing the latest PostgreSQL version:
+
+```bash
+sudo apt install postgresql
+```
+
+PostgreSQL service status check:
+
+```bash
+sudo systemctl status postgresql
+```
+
+Smoke test:
+
+```bash
+sudo -u postgres psql -c "SELECT version();"
+```
+
+Succesful launch too!
+
+## 4. Networking
 
 To be completed.
 
-## 5. Networking
+## 5. Persistent storage
 
 To be completed.
 
-## 6. Persistent storage
-
-To be completed.
-
-## 7. Testing
+## 6. Testing
 
 To be completed.
 

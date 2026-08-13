@@ -167,14 +167,97 @@ sudo systemctl status postgresql
 Smoke test:
 
 ```bash
-sudo -u postgres psql -c "SELECT version();"
+sudo -u postgres psql -c "SELECT 1;"
 ```
 
 Succesful launch too!
 
 ## 4. Networking
 
-To be completed.
+Checking available Docker networks:
+
+```bash
+sudo docker network ls
+```
+
+Inspecting the default `bridge` network:
+
+```bash
+sudo docker inspect bridge
+```
+
+Checking Docker network interfaces on the host:
+
+```bash
+ip a show docker0
+```
+
+Running two test containers in the default `bridge` network:
+
+```bash
+sudo docker run -dit --name test1 alpine
+sudo docker run -dit --name test2 alpine
+sudo docker ps
+```
+
+Checking container IP addresses:
+
+```bash
+sudo docker exec -it test1 /bin/sh
+ip a
+exit
+sudo docker exec -it test2 /bin/sh
+ip a
+exit
+```
+
+Testing connectivity between containers:
+
+```bash
+sudo docker exec -it test1 /bin/sh
+ping -c 3 172.17.0.3
+exit
+sudo docker exec -it test2 /bin/sh
+ping -c 3 172.17.0.2
+exit
+```
+
+Creating a user-defined bridge network:
+
+```bash
+sudo docker network create testbridge
+sudo docker network ls
+```
+
+Running two test containers in the user-defined network:
+
+```bash
+sudo docker rm -f test1
+sudo docker rm -f test2
+sudo docker run -dit --name test1 --network testbridge alpine
+sudo docker run -dit --name test2 --network testbridge alpine
+```
+
+Testing connectivity by container name:
+
+```bash
+sudo docker exec -it test1 /bin/sh
+ping -c 3 test2
+exit
+sudo docker exec -it test2 /bin/sh
+ping -c 3 test1
+exit
+```
+
+Removing test containers and the test network:
+
+```bash
+sudo docker rm -f test1
+sudo docker rm -f test2
+sudo docker network rm testbridge
+sudo docker ps -a
+sudo docker network ls
+```
 
 ## 5. Persistent storage
 

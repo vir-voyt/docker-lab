@@ -285,7 +285,81 @@ sudo docker network ls
 
 ## 5. Persistent storage
 
-To be completed.
+Checking existing Docker volumes:
+
+```bash
+sudo docker volume ls
+```
+
+Creating a named volume:
+
+```bash
+sudo docker volume create test
+```
+
+Running a test container with the volume mounted:
+
+```bash
+sudo docker run --name=db -e POSTGRES_PASSWORD=secret -d -v test:/var/lib/postgresql postgres:18
+```
+
+Writing test data to the mounted volume:
+
+```bash
+sudo docker exec -ti db psql -U postgres
+CREATE TABLE tasks (
+    id SERIAL PRIMARY KEY,
+    description VARCHAR(100)
+);
+INSERT INTO tasks (description) VALUES ('Finish work'), ('Have fun');
+SELECT * FROM tasks;
+```
+
+```
+ id | description
+----+-------------
+  1 | Finish work
+  2 | Have fun
+(2 rows)
+```
+
+Removing the test container:
+
+```bash
+\q
+sudo docker stop db
+sudo docker rm db
+```
+
+Running a new container with the same volume and verifying that the data persisted:
+
+```bash
+sudo docker run --name=new-db -d -v test:/var/lib/postgresql postgres:18
+```
+
+Inspecting the volume:
+
+```bash
+sudo docker exec -ti new-db psql -U postgres
+SELECT * FROM tasks;
+```
+
+```
+ id | description
+----+-------------
+  1 | Finish work
+  2 | Have fun
+(2 rows)
+```
+
+Removing the test container and volume:
+
+```bash
+\q
+sudo docker stop new-db
+sudo docker rm new-db
+sudo docker volume rm test
+```
 
 ## 6. Testing
 

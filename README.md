@@ -92,7 +92,7 @@ sudo nano /etc/ssh/sshd_config
 
 The following directive was set:
 
-```bash
+```text
 Port 2007
 ```
 
@@ -162,7 +162,7 @@ Running the test container:
 sudo docker run hello-world
 ```
 
-Successful launch!
+The Docker installation was verified successfully.
 
 ## 3. PostgreSQL deployment
 
@@ -184,7 +184,7 @@ Smoke test:
 sudo -u postgres psql -c "SELECT 1;"
 ```
 
-Successful launch too!
+The PostgreSQL installation was verified successfully.
 
 ## 4. Networking
 
@@ -236,6 +236,16 @@ ping -c 3 172.17.0.2
 exit
 ```
 
+Testing name resolution in the default `bridge` network:
+
+```bash
+sudo docker exec -it test1 /bin/sh
+ping -c 3 test2
+exit
+```
+
+Container name resolution is not available between containers on the default bridge network, so the containers can communicate by IP address but not by container name.
+
 Creating a user-defined bridge network:
 
 ```bash
@@ -285,7 +295,7 @@ To be completed.
 
 ### SSH still listens on port 22 after changing `sshd_config`
 
-After changing the SSH port in /etc/ssh/sshd_config to 2007 and restarting the SSH service, SSH was still listening on port 22.
+After changing the SSH port in `/etc/ssh/sshd_config` to `2007` and restarting the SSH service, SSH was still listening on port 22.
 
 The effective SSH configuration was checked with:
 
@@ -301,7 +311,7 @@ The actual listening sockets were then checked with:
 sudo ss -tlnp | grep ssh
 ```
 
-The socket was still listening on port 22 and was managed by systemd through ssh.socket.
+The socket was still listening on port 22 and was managed by `systemd` through `ssh.socket`.
 
 To apply the new port, the systemd configuration was reloaded and the SSH socket was restarted:
 
@@ -332,6 +342,9 @@ E: The list of sources could not be read.
 
 ```bash
 cat /etc/apt/sources.list.d/docker.sources
+```
+
+```
 
 Types: deb
 
@@ -357,6 +370,9 @@ After removing the empty lines, the file looked like this:
 
 ```bash
 ruslan@docker-lab:~$ cat /etc/apt/sources.list.d/docker.sources
+```
+
+```
 Types: deb
 URIs: https://download.docker.com/linux/ubuntu
 Suites: noble

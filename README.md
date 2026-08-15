@@ -361,10 +361,6 @@ sudo docker rm new-db
 sudo docker volume rm test
 ```
 
-## 6. Testing
-
-To be completed.
-
 ## Troubleshooting
 
 ### SSH still listens on port `22` after changing `sshd_config`

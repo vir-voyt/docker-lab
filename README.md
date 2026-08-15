@@ -6,7 +6,7 @@ Home lab for deploying and administering PostgreSQL with Docker on Ubuntu Server
 - Deploy an Ubuntu Server virtual machine
 - Configure remote administration over SSH
 - Install and configure Docker
-- Deploy PostgreSQL in a container
+- Deploy and verify PostgreSQL as a system service
 - Configure persistent storage
 - Configure container networking
 - Test PostgreSQL connectivity
@@ -29,18 +29,13 @@ Home lab for deploying and administering PostgreSQL with Docker on Ubuntu Server
 ## Architecture
 
 ```text
-MacBook
-   |
-   | SSH
-   |
-   v
+MacBook Pro M1 Pro
+       |
+       | SSH
+       v
 Ubuntu Server VM
-   |
-   v
-Docker Engine
-   |
-   v
-PostgreSQL container
+├── Docker Engine
+└── PostgreSQL service
 ```
 
 ## 1. Ubuntu Server Setup
@@ -95,7 +90,7 @@ The default SSH port was changed from 22 to 2007 in:
 sudo nano /etc/ssh/sshd_config
 ```
 
-The SSH port was changed to 2007:
+The following directive was set:
 
 ```bash
 Port 2007
@@ -117,7 +112,7 @@ ss -tlnp | grep 2007
 
 ### Set up Docker's apt repository
 
-```apt``` prerequisites and Docker GPG key setup:
+`apt` prerequisites and Docker GPG key setup:
 
 ```bash
 sudo apt update
@@ -127,7 +122,7 @@ sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyring
 sudo chmod a+r /etc/apt/keyrings/docker.asc
 ```
 
-Adding the repository to ```apt``` sources:
+Adding the repository to `apt` sources:
 
 ```bash
 sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
@@ -171,7 +166,7 @@ Successful launch!
 
 ## 3. PostgreSQL deployment
 
-Installing the latest PostgreSQL version:
+Installing PostgreSQL from Ubuntu repositories:
 
 ```bash
 sudo apt install postgresql
@@ -189,7 +184,7 @@ Smoke test:
 sudo -u postgres psql -c "SELECT 1;"
 ```
 
-Succesful launch too!
+Successful launch too!
 
 ## 4. Networking
 
@@ -298,7 +293,7 @@ The effective SSH configuration was checked with:
 sudo sshd -T | grep '^port'
 ```
 
-This confirmed that sshd was configured to use port 2007.
+This confirmed that `sshd` was configured to use port `2007`.
 
 The actual listening sockets were then checked with:
 
@@ -321,11 +316,11 @@ The listening port was verified again with:
 sudo ss -tlnp | grep ssh
 ```
 
-**Key point:** sshd -T shows the effective SSH daemon configuration, while ss shows what ports are actually listening. When SSH uses systemd socket activation, changing sshd_config may also require restarting ssh.socket.
+**Key point:** `sshd -T` shows the effective SSH daemon configuration, while `ss` shows which ports are actually listening. When SSH uses systemd socket activation, changing `sshd_config` may also require restarting `ssh.socket`.
 
-### ```sudo apt update``` error
+### `sudo apt update` error
 
-After adding the ```Docker``` repository an error occurred:
+After adding the `Docker` repository an error occurred:
 
 ```bash
 sudo apt update
@@ -333,7 +328,7 @@ E: Malformed entry 1 in sources file /etc/apt/sources.list.d/docker.sources (URI
 E: The list of sources could not be read.
 ```
 
-```docker.sources``` was checked:
+`docker.sources` was checked:
 
 ```bash
 cat /etc/apt/sources.list.d/docker.sources
@@ -352,7 +347,7 @@ Signed-By: /etc/apt/keyrings/docker.asc
 
 ```
 
-The file contained an empty line after each entry, causing ```apt``` to parse them as separate entries.
+The file contained an empty line after each entry, causing `apt` to parse them as separate entries.
 
 ```bash
 sudo nano /etc/apt/sources.list.d/docker.sources

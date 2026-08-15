@@ -1,5 +1,5 @@
 # docker-lab
-Home lab for deploying and administering PostgreSQL with Docker on Ubuntu Server.
+Home lab for Linux, Docker, and PostgreSQL administration on Ubuntu Server.
 
 ## Goals
 
@@ -84,7 +84,7 @@ sudo apt update
 sudo apt install -y avahi-daemon
 ```
 
-The default SSH port was changed from 22 to 2007 in:
+The default SSH port was changed from `22` to `2007` in:
 
 ```bash
 sudo nano /etc/ssh/sshd_config
@@ -293,9 +293,9 @@ To be completed.
 
 ## Troubleshooting
 
-### SSH still listens on port 22 after changing `sshd_config`
+### SSH still listens on port `22` after changing `sshd_config`
 
-After changing the SSH port in `/etc/ssh/sshd_config` to `2007` and restarting the SSH service, SSH was still listening on port 22.
+After changing the SSH port in `/etc/ssh/sshd_config` to `2007` and restarting the SSH service, SSH was still listening on port `22`.
 
 The effective SSH configuration was checked with:
 
@@ -311,7 +311,7 @@ The actual listening sockets were then checked with:
 sudo ss -tlnp | grep ssh
 ```
 
-The socket was still listening on port 22 and was managed by `systemd` through `ssh.socket`.
+The socket was still listening on port `22` and was managed by `systemd` through `ssh.socket`.
 
 To apply the new port, the systemd configuration was reloaded and the SSH socket was restarted:
 
@@ -330,10 +330,13 @@ sudo ss -tlnp | grep ssh
 
 ### `sudo apt update` error
 
-After adding the `Docker` repository an error occurred:
+After adding the Docker repository, an error occurred:
 
 ```bash
 sudo apt update
+```
+
+```
 E: Malformed entry 1 in sources file /etc/apt/sources.list.d/docker.sources (URI)
 E: The list of sources could not be read.
 ```
@@ -360,16 +363,14 @@ Signed-By: /etc/apt/keyrings/docker.asc
 
 ```
 
-The file contained an empty line after each entry, causing `apt` to parse them as separate entries.
+The file contained empty lines between the fields, causing `apt` to parse them as separate entries.
 
 ```bash
 sudo nano /etc/apt/sources.list.d/docker.sources
 ```
 
-After removing the empty lines, the file looked like this:
-
 ```bash
-ruslan@docker-lab:~$ cat /etc/apt/sources.list.d/docker.sources
+cat /etc/apt/sources.list.d/docker.sources
 ```
 
 ```
@@ -381,4 +382,4 @@ Architectures: arm64
 Signed-By: /etc/apt/keyrings/docker.asc
 ```
 
-After the fix, apt update completed successfully.
+After the fix, `apt update` completed successfully.

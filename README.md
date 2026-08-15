@@ -89,11 +89,30 @@ sudo apt update
 sudo apt install -y avahi-daemon
 ```
 
+The default SSH port was changed from 22 to 2007 in:
+
+```bash
+sudo nano /etc/ssh/sshd_config
+```
+
+The SSH port was changed to 2007:
+
+```bash
+Port 2007
+```
+
 The VM can then be accessed from the macOS host using:
 
 ```bash
-ssh ruslan@docker-lab.local
+ssh -p 2007 ruslan@docker-lab.local
 ```
+
+The listening port can be verified with:
+
+```bash
+ss -tlnp | grep 2007
+```
+
 ## 2. Docker installation
 
 ### Set up Docker's apt repository
@@ -268,6 +287,41 @@ To be completed.
 To be completed.
 
 ## Troubleshooting
+
+### SSH still listens on port 22 after changing `sshd_config`
+
+After changing the SSH port in /etc/ssh/sshd_config to 2007 and restarting the SSH service, SSH was still listening on port 22.
+
+The effective SSH configuration was checked with:
+
+```bash
+sudo sshd -T | grep '^port'
+```
+
+This confirmed that sshd was configured to use port 2007.
+
+The actual listening sockets were then checked with:
+
+```bash
+sudo ss -tlnp | grep ssh
+```
+
+The socket was still listening on port 22 and was managed by systemd through ssh.socket.
+
+To apply the new port, the systemd configuration was reloaded and the SSH socket was restarted:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl restart ssh.socket
+```
+
+The listening port was verified again with:
+
+```bash
+sudo ss -tlnp | grep ssh
+```
+
+**Key point:** sshd -T shows the effective SSH daemon configuration, while ss shows what ports are actually listening. When SSH uses systemd socket activation, changing sshd_config may also require restarting ssh.socket.
 
 ### ```sudo apt update``` error
 

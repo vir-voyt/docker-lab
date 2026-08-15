@@ -28,7 +28,7 @@ Home lab for deploying and administering PostgreSQL with Docker on Ubuntu Server
 
 ## Architecture
 
-```text
+```
 MacBook Pro M1 Pro
        |
        | SSH
